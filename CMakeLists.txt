@@ -22,13 +22,15 @@ else()
    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-
 # SET(OpenCV_DIR /home/thomas/Documents/opencv-3.4.13/build)
-SET(OpenCV_DIR /home/teddy/Dev/opencv-3.4.13/build)
+SET(OpenCV_DIR /home/teddy/Dev/opencv/build)
+set(Torch_DIR /home/teddy/Dev/libtorch/share/cmake/Torch)  # libtorch
+
 
 #SET(EXECUTABLE_OUTPUT_PATH ".")
 FIND_PACKAGE(realsense2 CONFIG REQUIRED)
-FIND_PACKAGE(OpenCV 3)
+FIND_PACKAGE(OpenCV 4)
+FIND_PACKAGE(Torch REQUIRED)
 
 
 #SET(ZED_LIBS /usr/local/zed /usr/local/cuda ${CUDA_CUDART_LIBRARY})
@@ -38,4 +40,5 @@ ADD_EXECUTABLE(main Examples/main.cpp)
 TARGET_LINK_LIBRARIES(
     main
     ${OpenCV_LIBS}
+    ${TORCH_LIBRARIES}
 )

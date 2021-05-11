@@ -70,9 +70,11 @@ std::vector<torch::Tensor> SuperPoint::forward(torch::Tensor x) {
     x = torch::relu(conv4a->forward(x));
     x = torch::relu(conv4b->forward(x));
 
+    // Compute the dense keypoint scores
     auto cPa = torch::relu(convPa->forward(x));
     auto semi = convPb->forward(cPa);  // [B, 65, H/8, W/8]
 
+    // Compute the dense descriptors
     auto cDa = torch::relu(convDa->forward(x));
     auto desc = convDb->forward(cDa);  // [B, d1, H/8, W/8]
 
