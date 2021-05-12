@@ -4,13 +4,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/Examples/main.cpp" "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/build/CMakeFiles/main.dir/Examples/main.cpp.o"
+  "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/src/SPextractor.cc" "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/build/CMakeFiles/DEVO_SPSG_CPP.dir/src/SPextractor.cc.o"
+  "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/src/SuperPoint.cc" "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/build/CMakeFiles/DEVO_SPSG_CPP.dir/src/SuperPoint.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
   "COMPILEDWITHC0X"
+  "DEVO_SPSG_CPP_EXPORTS"
   )
 
 # The include file search paths:
@@ -74,7 +76,6 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/teddy/Documents/DEVO/DEVO_SPSG_CPP/build/CMakeFiles/DEVO_SPSG_CPP.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
