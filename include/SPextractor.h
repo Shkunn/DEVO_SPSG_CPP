@@ -23,7 +23,7 @@
 
 #include <vector>
 #include <list>
-#include <opencv/cv.h>
+// #include <opencv/cv.h>
 
 #include <torch/torch.h>
 #include "SuperPoint.h"
