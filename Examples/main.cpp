@@ -7,9 +7,12 @@
 #include "opencv2/xfeatures2d.hpp"
 #include "opencv2/xfeatures2d/nonfree.hpp"
 
+#include "SuperPoint.h"
+#include "SPextractor.h"
 
 using namespace cv;
 using namespace std;
+using namespace ORB_SLAM2;
 
 int main(int argc, const char* argv[])
 {
@@ -24,14 +27,14 @@ int main(int argc, const char* argv[])
 
     // std::cout << "image dimension (" << img.cols << "x" << img.rows << ")" << std::endl;
 
-    //     imshow("Display window", img);
-    //     int k = waitKey(0); // Wait for a keystroke in the window
-    //     if(k == 's')
-    //     {
-    //         imwrite("starry_night.png", img);
-    //     }
+    imshow("Display window", input_1);
+    int k = waitKey(0); // Wait for a keystroke in the window
+    if(k == 's')
+    {
+        imwrite("starry_night.png", input_1);
+    }
 
-
+    /*
     // SURF // 
 
     Ptr< cv::xfeatures2d::SURF> surf =  xfeatures2d::SURF::create();
@@ -93,7 +96,65 @@ int main(int argc, const char* argv[])
     cv::Mat output_orb;
     cv::drawKeypoints(input_1, keypoints_orb, output_orb);
     cv::imwrite("../data/result/orb_result.jpg", output_orb);
+    */
 
+    int nFeatures = 1000;
+    float fScaleFactor = 1.2;
+    int nLevels = 8;
+    int fIniThFAST = 20;
+    int fMinThFAST = 7;
+
+    int mnScaleLevels;
+    float mfScaleFactor;
+    float mfLogScaleFactor;
+    std::vector<float> mvScaleFactors;
+    std::vector<float> mvInvScaleFactors;
+    std::vector<float> mvLevelSigma2;
+    std::vector<float> mvInvLevelSigma2;
+
+    std::vector<cv::KeyPoint> mvKeys;
+    ORBextractor* mpORBextractorLeft;
+    const cv::Mat mDescriptors;
+    int N;
+
+    mpORBextractorLeft = new ORBextractor(nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
+
+    // // mnScaleLevels = mpORBextractorLeft->GetLevels();
+    // // mfScaleFactor = mpORBextractorLeft->GetScaleFactor();
+    // mfLogScaleFactor = log(mfScaleFactor);
+    // mvScaleFactors = mpORBextractorLeft->GetScaleFactors();
+    // mvInvScaleFactors = mpORBextractorLeft->GetInverseScaleFactors();
+    // mvLevelSigma2 = mpORBextractorLeft->GetScaleSigmaSquares();
+    // mvInvLevelSigma2 = mpORBextractorLeft->GetInverseScaleSigmaSquares();
+    
+
+    // (*mpORBextractorLeft)(input_1, cv::Mat(), mvKeys, mDescriptors);
+    // cout << "desc size: " << mDescriptors.rows << ' ' << mDescriptors.cols << endl;
+
+    // N = mvKeys.size();
+
+    // UndistortKeyPoints();
+
+    // ComputeStereoMatches();
+
+    // mvpMapPoints = vector<MapPoint*>(N,static_cast<MapPoint*>(NULL));    
+    // mvbOutlier = vector<bool>(N,false);
+
+    // ComputeImageBounds(imLeft);
+
+    // mfGridElementWidthInv=static_cast<float>(FRAME_GRID_COLS)/(mnMaxX-mnMinX);
+    // mfGridElementHeightInv=static_cast<float>(FRAME_GRID_ROWS)/(mnMaxY-mnMinY);
+
+    // fx = K.at<float>(0,0);
+    // fy = K.at<float>(1,1);
+    // cx = K.at<float>(0,2);
+    // cy = K.at<float>(1,2);
+    // invfx = 1.0f/fx;
+    // invfy = 1.0f/fy;
+
+    // mb = mbf/fx;
+
+    // AssignFeaturesToGrid();
     
     return 0;
 }
