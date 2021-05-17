@@ -16,14 +16,14 @@ using namespace ORB_SLAM2;
 
 int main(int argc, const char* argv[])
 {
-    std::string image_path_1 = samples::findFile("../data/img_1.jpg");
+    std::string image_path_1 = samples::findFile("data/img_1.jpg");
     cv::Mat input_1 = cv::imread(image_path_1, 0); //Load as grayscale
 
-    std::string image_path_2 = samples::findFile("../data/img_2.jpg");
+    std::string image_path_2 = samples::findFile("data/img_2.jpg");
     cv::Mat input_2 = cv::imread(image_path_2, 0); //Load as grayscale
 
-    resize(input_1, input_1, Size(input_1.cols/2, input_1.rows/2));
-    resize(input_2, input_2, Size(input_2.cols/2, input_2.rows/2));
+    resize(input_1, input_1, cv::Size(input_1.cols/2, input_1.rows/2));
+    resize(input_2, input_2, cv::Size(input_2.cols/2, input_2.rows/2));
 
     // std::cout << "image dimension (" << img.cols << "x" << img.rows << ")" << std::endl;
 
@@ -33,6 +33,8 @@ int main(int argc, const char* argv[])
     {
         imwrite("starry_night.png", input_1);
     }
+
+    #pragma region TEST ORB EXTRACTOR
 
     /*
     // SURF // 
@@ -98,40 +100,43 @@ int main(int argc, const char* argv[])
     cv::imwrite("../data/result/orb_result.jpg", output_orb);
     */
 
-    int nFeatures = 1000;
-    float fScaleFactor = 1.2;
-    int nLevels = 8;
-    int fIniThFAST = 20;
-    int fMinThFAST = 7;
+    // int nFeatures = 1000;
+    // float fScaleFactor = 1.2;
+    // int nLevels = 8;
+    // float fIniThFAST = 20;
+    // float fMinThFAST = 7;
 
-    int mnScaleLevels;
-    float mfScaleFactor;
-    float mfLogScaleFactor;
-    std::vector<float> mvScaleFactors;
-    std::vector<float> mvInvScaleFactors;
-    std::vector<float> mvLevelSigma2;
-    std::vector<float> mvInvLevelSigma2;
+    // int mnScaleLevels;
+    // float mfScaleFactor;
+    // float mfLogScaleFactor;
+    // std::vector<float> mvScaleFactors;
+    // std::vector<float> mvInvScaleFactors;
+    // std::vector<float> mvLevelSigma2;
+    // std::vector<float> mvInvLevelSigma2;
 
-    std::vector<cv::KeyPoint> mvKeys;
-    ORBextractor* mpORBextractorLeft;
-    const cv::Mat mDescriptors;
-    int N;
+    // std::vector<cv::KeyPoint> mvKeys;
+    // ORBextractor* mpORBextractorLeft;
+    // const cv::Mat mDescriptors;
+    // int N;
 
-    mpORBextractorLeft = new ORBextractor(nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
-
-    // // mnScaleLevels = mpORBextractorLeft->GetLevels();
-    // // mfScaleFactor = mpORBextractorLeft->GetScaleFactor();
-    // mfLogScaleFactor = log(mfScaleFactor);
-    // mvScaleFactors = mpORBextractorLeft->GetScaleFactors();
-    // mvInvScaleFactors = mpORBextractorLeft->GetInverseScaleFactors();
-    // mvLevelSigma2 = mpORBextractorLeft->GetScaleSigmaSquares();
-    // mvInvLevelSigma2 = mpORBextractorLeft->GetInverseScaleSigmaSquares();
+    // std::cout << "2" << std::endl;
     
+    // ORB extraction
+    // mpORBextractorLeft = new ORBextractor(nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
+    // std::cout << "Keys: "<< mvKeys << ", Descriptors: " << mDescriptors << std::endl;
+
 
     // (*mpORBextractorLeft)(input_1, cv::Mat(), mvKeys, mDescriptors);
-    // cout << "desc size: " << mDescriptors.rows << ' ' << mDescriptors.cols << endl;
 
     // N = mvKeys.size();
+
+    // if(mvKeys.empty())
+    // {
+    //     std::cout << "EXIT" << std::endl;
+    //     // return;
+    //     exit(EXIT_FAILURE);
+    // }
+        
 
     // UndistortKeyPoints();
 
@@ -155,6 +160,81 @@ int main(int argc, const char* argv[])
     // mb = mbf/fx;
 
     // AssignFeaturesToGrid();
+
+    #pragma endregion
+
+
+    int nFeatures = 1000;
+    float fScaleFactor = 1.2;
+    int nLevels = 8;
+    float fIniThFAST = 20;
+    float fMinThFAST = 7;
+
+    SPextractor ORBextractor = SPextractor(nFeatures, fScaleFactor, nLevels, fIniThFAST, fMinThFAST);
+
+    OutputArray _descriptors = ORBextractor.mDescriptors;
+
+    InputArray _image = input_1;
+    Mat image = _image.getMat();
+    
+    // Mat image = input_1;
+    assert(image.type() == CV_8UC1);
+
+    Mat descriptors;
+
+    // Pre-compute the scale pyramid
+    ORBextractor.ComputePyramid(image);
+
+    vector < vector<KeyPoint> > allKeypoints;
+    ORBextractor.ComputeKeyPointsOctTree(allKeypoints, descriptors);
+    cout << descriptors.rows << endl;
+
+    // exit(EXIT_FAILURE);
+
+    int nkeypoints = 0;
+    for (int level = 0; level < nLevels; ++level)
+        nkeypoints += (int)allKeypoints[level].size();
+    if( nkeypoints == 0 )
+        _descriptors.release();
+    else
+    {
+        _descriptors.create(nkeypoints, 256, CV_32F);
+        descriptors.copyTo(_descriptors.getMat());
+    }
+
+    ORBextractor.mvKeys.clear();
+    ORBextractor.mvKeys.reserve(nkeypoints);
+
+    int offset = 0;
+    for (int level = 0; level < nLevels; ++level)
+    {
+        vector<KeyPoint>& keypoints = allKeypoints[level];
+        int nkeypointsLevel = (int)keypoints.size();
+
+        if(nkeypointsLevel==0)
+            continue;
+
+        // // preprocess the resized image
+        // Mat workingMat = mvImagePyramid[level].clone();
+        // GaussianBlur(workingMat, workingMat, Size(7, 7), 2, 2, BORDER_REFLECT_101);
+
+        // // Compute the descriptors
+        // Mat desc = descriptors.rowRange(offset, offset + nkeypointsLevel);
+        // computeDescriptors(workingMat, keypoints, desc, pattern);
+
+        // offset += nkeypointsLevel;
+
+        // Scale keypoint coordinates
+        if (level != 0)
+        {
+            float scale = ORBextractor.mvScaleFactor[level]; //getScale(level, firstLevel, scaleFactor);
+            for (vector<KeyPoint>::iterator keypoint = keypoints.begin(),
+                 keypointEnd = keypoints.end(); keypoint != keypointEnd; ++keypoint)
+                keypoint->pt *= scale;
+        }
+        // And add the keypoints to the output
+        ORBextractor.mvKeys.insert(ORBextractor.mvKeys.end(), keypoints.begin(), keypoints.end());
+    }
     
     return 0;
 }

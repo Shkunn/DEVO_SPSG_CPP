@@ -192,7 +192,9 @@ SPDetector::SPDetector(std::shared_ptr<SuperPoint> _model) : model(_model)
 void SPDetector::detect(cv::Mat &img, bool cuda)
 {
     auto x = torch::from_blob(img.clone().data, {1, 1, img.rows, img.cols}, torch::kByte);
-    x = x.to(torch::kFloat) / 255;
+    x = x.clone().to(torch::kFloat) / 255;
+    
+    std::cout << "HELLOOOOO THERE" << std::endl;
 
     bool use_cuda = cuda && torch::cuda::is_available();
     torch::DeviceType device_type;
@@ -208,7 +210,6 @@ void SPDetector::detect(cv::Mat &img, bool cuda)
 
     mProb = out[0].squeeze(0);  // [H, W]
     mDesc = out[1];             // [1, 256, H/8, W/8]
-
 }
 
 

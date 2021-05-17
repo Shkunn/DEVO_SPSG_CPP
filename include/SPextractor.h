@@ -90,8 +90,10 @@ public:
     }
 
     std::vector<cv::Mat> mvImagePyramid;
+    cv::Mat mDescriptors;
+    std::vector<cv::KeyPoint> mvKeys;
 
-protected:
+// protected:
 
     void ComputePyramid(cv::Mat image);
     void ComputeKeyPointsOctTree(std::vector<std::vector<cv::KeyPoint> >& allKeypoints, cv::Mat &_desc);    
