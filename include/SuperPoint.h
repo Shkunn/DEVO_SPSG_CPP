@@ -53,7 +53,7 @@ public:
     void getKeyPoints(float threshold, int iniX, int maxX, int iniY, int maxY, std::vector<cv::KeyPoint> &keypoints, bool nms);
     void computeDescriptors(const std::vector<cv::KeyPoint> &keypoints, cv::Mat &descriptors);
 
-private:
+// private:
     std::shared_ptr<SuperPoint> model;
     torch::Tensor mProb;
     torch::Tensor mDesc;

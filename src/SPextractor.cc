@@ -417,6 +417,15 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
 
     for (int level = 0; level < nlevels; ++level)
     {
+        #pragma region IMSHOW temp
+        imshow("After pyramide", mvImagePyramid[level]);
+        int a = waitKey(0); // Wait for a keystroke in the window
+        if(a == 's')
+        {
+            imwrite("starry_night.png", mvImagePyramid[level]);
+        }
+        #pragma endregion
+
         SPDetector detector(model);
         detector.detect(mvImagePyramid[level], false);
 
@@ -477,6 +486,17 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
                     }
                 }
 
+                int sizz = vKeysCell.size();
+
+                if(sizz != 0)
+                {
+                    cout << "MIRACLE un match" << endl;
+                } 
+
+                // for(vector<cv::KeyPoint>::iterator vit=vKeysCell.begin(); vit!=vKeysCell.end();vit++)
+                // {
+                //     cout << (*vit).pt.x << (*vit).pt.y << endl;
+                // }
             }
         }
 
@@ -618,6 +638,8 @@ void SPextractor::ComputePyramid(cv::Mat image)
         Mat temp(wholeSize, image.type()), masktemp;
         mvImagePyramid[level] = temp(Rect(EDGE_THRESHOLD, EDGE_THRESHOLD, sz.width, sz.height));
 
+        // cout << "Pyramide LEVEL: " << level << endl;
+
         // Compute the resized image
         if( level != 0 )
         {
@@ -628,9 +650,19 @@ void SPextractor::ComputePyramid(cv::Mat image)
         }
         else
         {
+            // mvImagePyramid[level] = image;
             copyMakeBorder(image, temp, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD, EDGE_THRESHOLD,
                            BORDER_REFLECT_101);            
         }
+
+        // #pragma region IMSHOW temp
+        // imshow("After pyramide", mvImagePyramid[level]);
+        // int a = waitKey(0); // Wait for a keystroke in the window
+        // if(a == 's')
+        // {
+        //     imwrite("starry_night.png", image);
+        // }
+        // #pragma endregion
     }
 
 }

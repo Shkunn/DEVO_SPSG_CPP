@@ -27,12 +27,14 @@ int main(int argc, const char* argv[])
 
     // std::cout << "image dimension (" << img.cols << "x" << img.rows << ")" << std::endl;
 
+    #pragma region IMSHOW
     imshow("Display window", input_1);
-    int k = waitKey(0); // Wait for a keystroke in the window
-    if(k == 's')
+    int s = waitKey(0); // Wait for a keystroke in the window
+    if(s == 's')
     {
         imwrite("starry_night.png", input_1);
     }
+    #pragma endregion
 
     #pragma region TEST ORB EXTRACTOR
 
@@ -176,6 +178,17 @@ int main(int argc, const char* argv[])
 
     InputArray _image = input_1;
     Mat image = _image.getMat();
+
+    #pragma region IMSHOW
+    imshow("Display window", image);
+    int k = waitKey(0); // Wait for a keystroke in the window
+    if(k == 's')
+    {
+        imwrite("starry_night.png", input_1);
+    }
+    #pragma endregion
+
+    cout << "_descriptors" << endl;
     
     // Mat image = input_1;
     assert(image.type() == CV_8UC1);
@@ -185,6 +198,18 @@ int main(int argc, const char* argv[])
     // Pre-compute the scale pyramid
     ORBextractor.ComputePyramid(image);
 
+    cout << "Created " << nLevels - 1 << " scaled images." << endl;
+    cout << "Exemple of Image 6 : " << endl;
+
+    #pragma region IMSHOW
+    imshow("Image After ComputePyramid", ORBextractor.mvImagePyramid[6]);
+    int z = waitKey(0); // Wait for a keystroke in the window
+    if(z == 's')
+    {
+        imwrite("hello.png", image);
+    }
+    #pragma endregion
+
     vector < vector<KeyPoint> > allKeypoints;
     ORBextractor.ComputeKeyPointsOctTree(allKeypoints, descriptors);
     cout << descriptors.rows << endl;
@@ -193,17 +218,29 @@ int main(int argc, const char* argv[])
 
     int nkeypoints = 0;
     for (int level = 0; level < nLevels; ++level)
+    {
         nkeypoints += (int)allKeypoints[level].size();
+        
+        cout << nkeypoints << endl;
+    }
     if( nkeypoints == 0 )
+    {
         _descriptors.release();
+        cout << "_descriptors" << endl;
+    }
     else
     {
         _descriptors.create(nkeypoints, 256, CV_32F);
         descriptors.copyTo(_descriptors.getMat());
+        cout << "descriptors" << endl;
+
     }
 
     ORBextractor.mvKeys.clear();
     ORBextractor.mvKeys.reserve(nkeypoints);
+
+    cout << "Hi 1:" << descriptors.rows << endl;
+
 
     int offset = 0;
     for (int level = 0; level < nLevels; ++level)
