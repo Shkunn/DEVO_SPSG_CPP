@@ -417,14 +417,14 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
 
     for (int level = 0; level < nlevels; ++level)
     {
-        #pragma region IMSHOW temp
-        imshow("After pyramide", mvImagePyramid[level]);
-        int a = waitKey(0); // Wait for a keystroke in the window
-        if(a == 's')
-        {
-            imwrite("starry_night.png", mvImagePyramid[level]);
-        }
-        #pragma endregion
+        // #pragma region IMSHOW temp
+        // imshow("After pyramide", mvImagePyramid[level]);
+        // int a = waitKey(0); // Wait for a keystroke in the window
+        // if(a == 's')
+        // {
+        //     imwrite("starry_night.png", mvImagePyramid[level]);
+        // }
+        // #pragma endregion
 
         SPDetector detector(model);
         detector.detect(mvImagePyramid[level], false);
@@ -488,10 +488,10 @@ void SPextractor::ComputeKeyPointsOctTree(vector<vector<KeyPoint> >& allKeypoint
 
                 int sizz = vKeysCell.size();
 
-                if(sizz != 0)
-                {
-                    cout << "MIRACLE un match" << endl;
-                } 
+                // if(sizz != 0)
+                // {
+                //     cout << "MIRACLE un match" << endl;
+                // } 
 
                 // for(vector<cv::KeyPoint>::iterator vit=vKeysCell.begin(); vit!=vKeysCell.end();vit++)
                 // {
@@ -547,7 +547,7 @@ void SPextractor::operator()( InputArray _image, InputArray _mask, vector<KeyPoi
 
     vector < vector<KeyPoint> > allKeypoints;
     ComputeKeyPointsOctTree(allKeypoints, descriptors);
-    cout << descriptors.rows << endl;
+    // cout << descriptors.rows << endl;
 
 
     int nkeypoints = 0;
